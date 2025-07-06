@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Share Popup Integration</title>
+    <!-- Bootstrap Icons (you're already using this) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        /* Share Popup Styles */
+        .share-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            animation: fadeIn 0.3s;
+        }
+        
+        .share-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 320px;
+            max-width: 90%;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            animation: slideUp 0.4s;
+        }
+        
+        .share-header {
+            margin-bottom: 1.5rem;
+        }
+        
+        .share-header h3 {
+            margin: 0;
+            color: #333;
+        }
+        
+        .share-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #777;
+        }
+        
+        .share-platforms {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+        
+        .share-platform {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            transition: transform 0.2s;
+        }
+        
+        .share-platform:hover {
+            transform: translateY(-5px);
+        }
+        
+        .platform-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+        
+        .platform-name {
+            font-size: 0.8rem;
+        }
+        
+        /* Platform Colors */
+        .facebook-bg { background: #3b5998; }
+        .twitter-bg { background: #1DA1F2; }
+        .whatsapp-bg { background: #25D366; }
+        .linkedin-bg { background: #0077B5; }
+        .telegram-bg { background: #0088cc; }
+        .email-bg { background: #ea4335; }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Your Existing Menu (example) -->
+    <ul class="menu">
+        <li><a href="#home"><i class="bi bi-house"></i><span>Home</span></a></li>
+        <li><a href="#about"><i class="bi bi-info-circle"></i><span>About</span></a></li>
+        <li><a href="#share" id="shareTrigger"><i class="bi bi-share"></i><span>Share</span></a></li>
+        <li><a href="#contact"><i class="bi bi-envelope"></i><span>Contact</span></a></li>
+    </ul>
+
+    <!-- Share Popup (hidden by default) -->
+    <div class="share-modal" id="shareModal">
+        <div class="share-container">
+            <button class="share-close" id="shareClose">&times;</button>
+            <div class="share-header">
+                <h3>Share This Page</h3>
+            </div>
+            <div class="share-platforms">
+                <a href="#" class="share-platform" data-platform="facebook">
+                    <div class="platform-icon facebook-bg">
+                        <i class="bi bi-facebook"></i>
+                    </div>
+                    <span class="platform-name">Facebook</span>
+                </a>
+                <a href="#" class="share-platform" data-platform="twitter">
+                    <div class="platform-icon twitter-bg">
+                        <i class="bi bi-twitter"></i>
+                    </div>
+                    <span class="platform-name">Twitter</span>
+                </a>
+                <a href="#" class="share-platform" data-platform="whatsapp">
+                    <div class="platform-icon whatsapp-bg">
+                        <i class="bi bi-whatsapp"></i>
+                    </div>
+                    <span class="platform-name">WhatsApp</span>
+                </a>
+                <a href="#" class="share-platform" data-platform="linkedin">
+                    <div class="platform-icon linkedin-bg">
+                        <i class="bi bi-linkedin"></i>
+                    </div>
+                    <span class="platform-name">LinkedIn</span>
+                </a>
+                <a href="#" class="share-platform" data-platform="telegram">
+                    <div class="platform-icon telegram-bg">
+                        <i class="bi bi-telegram"></i>
+                    </div>
+                    <span class="platform-name">Telegram</span>
+                </a>
+                <a href="#" class="share-platform" data-platform="email">
+                    <div class="platform-icon email-bg">
+                        <i class="bi bi-envelope"></i>
+                    </div>
+                    <span class="platform-name">Email</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get elements
+            const shareTrigger = document.getElementById('shareTrigger');
+            const shareModal = document.getElementById('shareModal');
+            const shareClose = document.getElementById('shareClose');
+            const sharePlatforms = document.querySelectorAll('.share-platform');
+            
+            // Current page URL for sharing
+            const currentUrl = encodeURIComponent(window.location.href);
+            const shareText = encodeURIComponent('Check this out: ');
+            
+            // Share URLs for each platform
+            const shareUrls = {
+                facebook: `https://www.facebook.com/sharer/sharer.php?u=${currentUrl}`,
+                twitter: `https://twitter.com/intent/tweet?text=${shareText}&url=${currentUrl}`,
+                whatsapp: `https://wa.me/?text=${shareText}${currentUrl}`,
+                linkedin: `https://www.linkedin.com/shareArticle?url=${currentUrl}`,
+                telegram: `https://t.me/share/url?url=${currentUrl}&text=${shareText}`,
+                email: `mailto:?subject=${shareText}&body=${currentUrl}`
+            };
+            
+            // Open modal when clicking share in menu
+            shareTrigger.addEventListener('click', function(e) {
+                e.preventDefault();
+                shareModal.style.display = 'flex';
+            });
+            
+            // Close modal
+            shareClose.addEventListener('click', function() {
+                shareModal.style.display = 'none';
+            });
+            
+            // Close when clicking outside
+            shareModal.addEventListener('click', function(e) {
+                if (e.target === shareModal) {
+                    shareModal.style.display = 'none';
+                }
+            });
+            
+            // Set up share platform links
+            sharePlatforms.forEach(platform => {
+                const platformName = platform.getAttribute('data-platform');
+                platform.setAttribute('href', shareUrls[platformName]);
+                platform.setAttribute('target', '_blank');
+            });
+            
+            // Close on Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    shareModal.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
