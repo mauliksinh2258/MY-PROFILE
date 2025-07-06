@@ -1,231 +1,244 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Share Popup Integration</title>
-    <!-- Bootstrap Icons (you're already using this) -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <style>
-        /* Share Popup Styles */
-        .share-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(5px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            animation: fadeIn 0.3s;
-        }
-        
-        .share-container {
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            width: 320px;
-            max-width: 90%;
-            text-align: center;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-            animation: slideUp 0.4s;
-        }
-        
-        .share-header {
-            margin-bottom: 1.5rem;
-        }
-        
-        .share-header h3 {
-            margin: 0;
-            color: #333;
-        }
-        
-        .share-close {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #777;
-        }
-        
-        .share-platforms {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
-        }
-        
-        .share-platform {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-decoration: none;
-            color: #333;
-            transition: transform 0.2s;
-        }
-        
-        .share-platform:hover {
-            transform: translateY(-5px);
-        }
-        
-        .platform-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-            color: white;
-        }
-        
-        .platform-name {
-            font-size: 0.8rem;
-        }
-        
-        /* Platform Colors */
-        .facebook-bg { background: #3b5998; }
-        .twitter-bg { background: #1DA1F2; }
-        .whatsapp-bg { background: #25D366; }
-        .linkedin-bg { background: #0077B5; }
-        .telegram-bg { background: #0088cc; }
-        .email-bg { background: #ea4335; }
-        
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        @keyframes slideUp {
-            from { 
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to { 
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Share This Page</title>
+  
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3f37c9;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --glass: rgba(67, 97, 238, 0.2);
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: white;
+      color: #333;
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .share-container {
+      max-width: 800px;
+      margin: auto;
+      padding: 2rem;
+      width: 90%;
+    }
+    
+    .share-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .share-header h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+    }
+    
+    .share-header p {
+      font-size: 1rem;
+      color: #666;
+    }
+    
+    /* Blue Share Box */
+    .share-card {
+      background: var(--primary);
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 20px;
+      padding: 2.5rem;
+      box-shadow: 0 10px 30px rgba(67, 97, 238, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      margin: 0 auto;
+      max-width: 600px;
+    }
+    
+    .share-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 1.2rem;
+      margin-top: 1.5rem;
+    }
+    
+    .share-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.2rem 0.8rem;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      text-decoration: none;
+      color: white;
+      transition: all 0.3s ease;
+    }
+    
+    .share-btn:hover {
+      transform: translateY(-5px);
+      background: rgba(255, 255, 255, 0.25);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .share-btn i {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .share-btn span {
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    
+    /* Platform colors (white icons with platform-colored backgrounds on hover) */
+    .facebook i { color: white; }
+    .twitter i { color: white; }
+    .whatsapp i { color: white; }
+    .linkedin i { color: white; }
+    .telegram i { color: white; }
+    .email i { color: white; }
+    
+    .facebook:hover { background: #1877f2; }
+    .twitter:hover { background: #1da1f2; }
+    .whatsapp:hover { background: #25d366; }
+    .linkedin:hover { background: #0077b5; }
+    .telegram:hover { background: #0088cc; }
+    .email:hover { background: #ea4335; }
+    
+    /* Footer */
+    .share-footer {
+      text-align: center;
+      margin-top: 3rem;
+      padding-bottom: 2rem;
+      color: #666;
+      font-size: 0.9rem;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .share-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      
+      .share-card {
+        padding: 1.8rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .share-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .share-header h1 {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
 </head>
+
 <body>
-    <!-- Your Existing Menu (example) -->
-    <ul class="menu">
-        <li><a href="#home"><i class="bi bi-house"></i><span>Home</span></a></li>
-        <li><a href="#about"><i class="bi bi-info-circle"></i><span>About</span></a></li>
-        <li><a href="#share" id="shareTrigger"><i class="bi bi-share"></i><span>Share</span></a></li>
-        <li><a href="#contact"><i class="bi bi-envelope"></i><span>Contact</span></a></li>
-    </ul>
 
-    <!-- Share Popup (hidden by default) -->
-    <div class="share-modal" id="shareModal">
-        <div class="share-container">
-            <button class="share-close" id="shareClose">&times;</button>
-            <div class="share-header">
-                <h3>Share This Page</h3>
-            </div>
-            <div class="share-platforms">
-                <a href="#" class="share-platform" data-platform="facebook">
-                    <div class="platform-icon facebook-bg">
-                        <i class="bi bi-facebook"></i>
-                    </div>
-                    <span class="platform-name">Facebook</span>
-                </a>
-                <a href="#" class="share-platform" data-platform="twitter">
-                    <div class="platform-icon twitter-bg">
-                        <i class="bi bi-twitter"></i>
-                    </div>
-                    <span class="platform-name">Twitter</span>
-                </a>
-                <a href="#" class="share-platform" data-platform="whatsapp">
-                    <div class="platform-icon whatsapp-bg">
-                        <i class="bi bi-whatsapp"></i>
-                    </div>
-                    <span class="platform-name">WhatsApp</span>
-                </a>
-                <a href="#" class="share-platform" data-platform="linkedin">
-                    <div class="platform-icon linkedin-bg">
-                        <i class="bi bi-linkedin"></i>
-                    </div>
-                    <span class="platform-name">LinkedIn</span>
-                </a>
-                <a href="#" class="share-platform" data-platform="telegram">
-                    <div class="platform-icon telegram-bg">
-                        <i class="bi bi-telegram"></i>
-                    </div>
-                    <span class="platform-name">Telegram</span>
-                </a>
-                <a href="#" class="share-platform" data-platform="email">
-                    <div class="platform-icon email-bg">
-                        <i class="bi bi-envelope"></i>
-                    </div>
-                    <span class="platform-name">Email</span>
-                </a>
-            </div>
-        </div>
+  <div class="share-container">
+    <div class="share-header">
+      <h1>Share This Page</h1>
+      <p>Help spread the word by sharing with your network</p>
     </div>
+    
+    <div class="share-card">
+      <div class="share-grid">
+        <a href="#" class="share-btn facebook" id="facebook-share">
+          <i class="bi bi-facebook"></i>
+          <span>Facebook</span>
+        </a>
+        
+        <a href="#" class="share-btn twitter" id="twitter-share">
+          <i class="bi bi-twitter"></i>
+          <span>Twitter</span>
+        </a>
+        
+        <a href="#" class="share-btn whatsapp" id="whatsapp-share">
+          <i class="bi bi-whatsapp"></i>
+          <span>WhatsApp</span>
+        </a>
+        
+        <a href="#" class="share-btn linkedin" id="linkedin-share">
+          <i class="bi bi-linkedin"></i>
+          <span>LinkedIn</span>
+        </a>
+        
+        <a href="#" class="share-btn telegram" id="telegram-share">
+          <i class="bi bi-telegram"></i>
+          <span>Telegram</span>
+        </a>
+        
+        <a href="#" class="share-btn email" id="email-share">
+          <i class="bi bi-envelope"></i>
+          <span>Email</span>
+        </a>
+      </div>
+    </div>
+    
+    <div class="share-footer">
+      <p>Thank you for sharing our content!</p>
+    </div>
+  </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Get elements
-            const shareTrigger = document.getElementById('shareTrigger');
-            const shareModal = document.getElementById('shareModal');
-            const shareClose = document.getElementById('shareClose');
-            const sharePlatforms = document.querySelectorAll('.share-platform');
-            
-            // Current page URL for sharing
-            const currentUrl = encodeURIComponent(window.location.href);
-            const shareText = encodeURIComponent('Check this out: ');
-            
-            // Share URLs for each platform
-            const shareUrls = {
-                facebook: `https://www.facebook.com/sharer/sharer.php?u=${currentUrl}`,
-                twitter: `https://twitter.com/intent/tweet?text=${shareText}&url=${currentUrl}`,
-                whatsapp: `https://wa.me/?text=${shareText}${currentUrl}`,
-                linkedin: `https://www.linkedin.com/shareArticle?url=${currentUrl}`,
-                telegram: `https://t.me/share/url?url=${currentUrl}&text=${shareText}`,
-                email: `mailto:?subject=${shareText}&body=${currentUrl}`
-            };
-            
-            // Open modal when clicking share in menu
-            shareTrigger.addEventListener('click', function(e) {
-                e.preventDefault();
-                shareModal.style.display = 'flex';
-            });
-            
-            // Close modal
-            shareClose.addEventListener('click', function() {
-                shareModal.style.display = 'none';
-            });
-            
-            // Close when clicking outside
-            shareModal.addEventListener('click', function(e) {
-                if (e.target === shareModal) {
-                    shareModal.style.display = 'none';
-                }
-            });
-            
-            // Set up share platform links
-            sharePlatforms.forEach(platform => {
-                const platformName = platform.getAttribute('data-platform');
-                platform.setAttribute('href', shareUrls[platformName]);
-                platform.setAttribute('target', '_blank');
-            });
-            
-            // Close on Escape key
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    shareModal.style.display = 'none';
-                }
-            });
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get current page URL and title
+      const currentUrl = encodeURIComponent(window.location.href);
+      const pageTitle = encodeURIComponent(document.title);
+      
+      // Set share URLs
+      const setShareLink = (id, url) => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.href = url;
+          el.target = '_blank';
+          el.rel = 'noopener noreferrer';
+        }
+      };
+      
+      setShareLink('facebook-share', `https://www.facebook.com/sharer/sharer.php?u=${currentUrl}`);
+      setShareLink('twitter-share', `https://twitter.com/intent/tweet?url=${currentUrl}&text=${pageTitle}`);
+      setShareLink('whatsapp-share', `https://wa.me/?text=${pageTitle}%20${currentUrl}`);
+      setShareLink('linkedin-share', `https://www.linkedin.com/shareArticle?url=${currentUrl}&title=${pageTitle}`);
+      setShareLink('telegram-share', `https://t.me/share/url?url=${currentUrl}&text=${pageTitle}`);
+      setShareLink('email-share', `mailto:?subject=${pageTitle}&body=Check%20this%20out:%20${currentUrl}`);
+      
+      // Add click animation
+      document.querySelectorAll('.share-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          this.style.transform = 'translateY(-5px) scale(0.95)';
+          setTimeout(() => {
+            this.style.transform = 'translateY(-5px) scale(1.05)';
+          }, 150);
         });
-    </script>
+      });
+    });
+  </script>
+
 </body>
 </html>
