@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Share This Page</title>
+  
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #4361ee;
+      --primary-dark: #3a0ca3;
+      --secondary: #7209b7;
+      --accent: #f72585;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --glass: rgba(255, 255, 255, 0.15);
+      --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #f9f9ff 0%, #f0f2ff 100%);
+      color: var(--dark);
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.6;
+    }
+    
+    .share-container {
+      max-width: 900px;
+      margin: auto;
+      padding: 3rem 2rem;
+      width: 90%;
+      position: relative;
+    }
+    
+    .share-header {
+      text-align: center;
+      margin-bottom: 3rem;
+      position: relative;
+    }
+    
+    .share-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.8rem;
+      font-weight: 600;
+      margin-bottom: 0.8rem;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      position: relative;
+      display: inline-block;
+    }
+    
+    .share-header h1::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(to right, var(--accent), var(--primary));
+      border-radius: 2px;
+    }
+    
+    .share-header p {
+      font-size: 1.1rem;
+      color: #666;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    /* Premium Share Card */
+    .share-card {
+      background: linear-gradient(145deg, rgba(67,97,238,0.95), rgba(57,12,163,0.95));
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 24px;
+      padding: 3rem;
+      box-shadow: 0 25px 50px -12px rgba(67, 97, 238, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      margin: 0 auto;
+      max-width: 700px;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    
+    .share-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      z-index: -1;
+      animation: rotate 15s linear infinite;
+    }
+    
+    @keyframes rotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .share-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    
+    .share-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem 1rem;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      text-decoration: none;
+      color: white;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    
+    .share-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 100%);
+      z-index: -1;
+      opacity: 0;
+      transition: var(--transition);
+    }
+    
+    .share-btn:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    }
+    
+    .share-btn:hover::before {
+      opacity: 1;
+    }
+    
+    .share-btn i {
+      font-size: 2rem;
+      margin-bottom: 0.8rem;
+      transition: var(--transition);
+    }
+    
+    .share-btn span {
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+    
+    /* Platform-specific hover effects */
+    .whatsapp:hover { background: #25d366; }
+    .instagram:hover { background: #e1306c; }
+    .facebook:hover { background: #1877f2; }
+    .linkedin:hover { background: #0077b5; }
+    .snapchat:hover { background: #fffc00; color: #000; }
+    .twitter:hover { background: #000000; }
+    .copy-link:hover { background: #6c757d; }
+    .email:hover { background: #ea4335; }
+    
+    .whatsapp:hover i { transform: scale(1.2) rotate(-5deg); }
+    .instagram:hover i { transform: scale(1.2) rotate(5deg); }
+    .facebook:hover i { transform: scale(1.2) rotate(-5deg); }
+    .linkedin:hover i { transform: scale(1.2) rotate(5deg); }
+    .snapchat:hover i { transform: scale(1.2) rotate(-5deg); }
+    .twitter:hover i { transform: scale(1.2) rotate(5deg); }
+    .copy-link:hover i { transform: scale(1.2) rotate(-5deg); }
+    .email:hover i { transform: scale(1.2) rotate(5deg); }
+    
+    /* QR Code Section */
+    .qr-section {
+      margin-top: 3rem;
+      text-align: center;
+      padding: 2rem;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .qr-section h3 {
+      color: white;
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+    
+    .qr-placeholder {
+      width: 150px;
+      height: 150px;
+      margin: 0 auto;
+      background: rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+    }
+    
+    .qr-placeholder i {
+      font-size: 3rem;
+      color: white;
+      opacity: 0.7;
+    }
+    
+    /* Footer */
+    .share-footer {
+      text-align: center;
+      margin-top: 4rem;
+      padding-bottom: 2rem;
+      color: #666;
+      font-size: 0.9rem;
+      position: relative;
+    }
+    
+    .share-footer::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 2px;
+      background: linear-gradient(to right, transparent, rgba(67,97,238,0.3), transparent);
+    }
+    
+    /* Floating particles */
+    .particle {
+      position: absolute;
+      background: rgba(255,255,255,0.5);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: -1;
+    }
+    
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.8);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .toast.show {
+      opacity: 1;
+    }
+    
+    /* Home Button */
+    .home-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+      transition: var(--transition);
+      z-index: 10;
+      overflow: hidden;
+    }
+    
+    .home-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--secondary), var(--primary));
+      opacity: 0;
+      transition: var(--transition);
+      z-index: -1;
+    }
+    
+    .home-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(67, 97, 238, 0.4);
+    }
+    
+    .home-btn:hover::before {
+      opacity: 1;
+    }
+    
+    .home-btn i {
+      font-size: 1.2rem;
+      transition: var(--transition);
+    }
+    
+    .home-btn:hover i {
+      transform: translateX(-3px);
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .share-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      
+      .share-header h1 {
+        font-size: 2.2rem;
+      }
+      
+      .share-card {
+        padding: 2.5rem 1.5rem;
+      }
+      
+      .home-btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+        top: 15px;
+        left: 15px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .share-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .share-header h1 {
+        font-size: 1.8rem;
+      }
+      
+      .share-header p {
+        font-size: 1rem;
+      }
+      
+      .home-btn {
+        padding: 8px 16px;
+        font-size: 0.8rem;
+        top: 10px;
+        left: 10px;
+      }
+      
+      .home-btn i {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="share-container">
+    <!-- Home Button -->
+    <button class="home-btn" id="home-btn">
+      <i class="bi bi-house-door"></i>
+      <span>Home</span>
+    </button>
+    
+    <div class="share-header">
+      <h1>Share This Page</h1>
+      <p>Spread the inspiration with your network and help others discover this content</p>
+    </div>
+    
+    <div class="share-card">
+      <div class="share-grid">
+        <a href="#" class="share-btn whatsapp" id="whatsapp-share">
+          <i class="bi bi-whatsapp"></i>
+          <span>WhatsApp</span>
+        </a>
+        
+        <a href="#" class="share-btn instagram" id="instagram-share">
+          <i class="bi bi-instagram"></i>
+          <span>Instagram</span>
+        </a>
+        
+        <a href="#" class="share-btn facebook" id="facebook-share">
+          <i class="bi bi-facebook"></i>
+          <span>Facebook</span>
+        </a>
+        
+        <a href="#" class="share-btn linkedin" id="linkedin-share">
+          <i class="bi bi-linkedin"></i>
+          <span>LinkedIn</span>
+        </a>
+        
+        <a href="#" class="share-btn snapchat" id="snapchat-share">
+          <i class="bi bi-snapchat"></i>
+          <span>Snapchat</span>
+        </a>
+        
+        <a href="#" class="share-btn twitter" id="twitter-share">
+          <i class="bi bi-twitter-x"></i>
+          <span>Twitter/X</span>
+        </a>
+        
+        <button class="share-btn copy-link" id="copy-link">
+          <i class="bi bi-link-45deg"></i>
+          <span>Copy Link</span>
+        </button>
+        
+        <a href="#" class="share-btn email" id="email-share">
+          <i class="bi bi-envelope"></i>
+          <span>Email</span>
+        </a>
+      </div>
+      
+      <!-- QR Code Section -->
+      <div class="qr-section">
+        <h3>Scan QR Code</h3>
+        <div class="qr-placeholder">
+          <i class="bi bi-qr-code-scan"></i>
+          <!-- You would replace this with your actual QR code image -->
+          <!-- <img src="your-qr-code.png" alt="QR Code"> -->
+        </div>
+      </div>
+    </div>
+    
+    <div class="share-footer">
+      <p>Your share helps us grow. Thank you for supporting our community!</p>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">Link copied to clipboard!</div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get current page URL and title
+      const currentUrl = window.location.href;
+      const pageTitle = document.title;
+      const encodedUrl = encodeURIComponent(currentUrl);
+      const encodedTitle = encodeURIComponent(pageTitle);
+      
+      // Set share URLs
+      const setShareLink = (id, url) => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.href = url;
+          el.target = '_blank';
+          el.rel = 'noopener noreferrer';
+        }
+      };
+      
+      setShareLink('whatsapp-share', `https://wa.me/?text=${encodedTitle}%20${encodedUrl}`);
+      setShareLink('instagram-share', `https://www.instagram.com/`);
+      setShareLink('facebook-share', `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`);
+      setShareLink('linkedin-share', `https://www.linkedin.com/shareArticle?url=${encodedUrl}&title=${encodedTitle}`);
+      setShareLink('snapchat-share', `https://www.snapchat.com/`);
+      setShareLink('twitter-share', `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`);
+      setShareLink('email-share', `mailto:?subject=${encodedTitle}&body=Check%20this%20out:%20${encodedUrl}`);
+      
+      // Copy Link functionality
+      document.getElementById('copy-link').addEventListener('click', function() {
+        navigator.clipboard.writeText(currentUrl).then(() => {
+          showToast('Link copied to clipboard!');
+        }).catch(err => {
+          showToast('Failed to copy link');
+          console.error('Failed to copy: ', err);
+        });
+      });
+      
+      // Home button functionality
+      document.getElementById('home-btn').addEventListener('click', function() {
+        // Replace with your actual home page URL
+        window.location.href = '/';
+      });
+      
+      // Show toast notification
+      function showToast(message) {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.classList.add('show');
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 3000);
+      }
+      
+      // Enhanced click animation for all buttons
+      document.querySelectorAll('.share-btn, .home-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          if (this.id !== 'copy-link' && this.id !== 'home-btn') {
+            e.preventDefault();
+          }
+          
+          // Ripple effect
+          const ripple = document.createElement('span');
+          ripple.classList.add('particle');
+          this.appendChild(ripple);
+          
+          const rect = this.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          
+          ripple.style.left = `${x}px`;
+          ripple.style.top = `${y}px`;
+          ripple.style.width = '0px';
+          ripple.style.height = '0px';
+          ripple.style.opacity = '1';
+          
+          setTimeout(() => {
+            ripple.style.width = '500px';
+            ripple.style.height = '500px';
+            ripple.style.opacity = '0';
+            ripple.style.marginLeft = '-250px';
+            ripple.style.marginTop = '-250px';
+          }, 10);
+          
+          setTimeout(() => {
+            ripple.remove();
+            if (this.id !== 'copy-link' && this.id !== 'home-btn' && this.href) {
+              window.open(this.href, '_blank');
+            }
+          }, 700);
+          
+          // Button animation
+          this.style.transform = 'translateY(-8px) scale(0.95)';
+          setTimeout(() => {
+            this.style.transform = 'translateY(-8px) scale(1.05)';
+          }, 150);
+        });
+      });
+      
+      // Create floating particles
+      function createParticles() {
+        const particles = 15;
+        for (let i = 0; i < particles; i++) {
+          const particle = document.createElement('div');
+          particle.classList.add('particle');
+          
+          // Random properties
+          const size = Math.random() * 5 + 2;
+          const posX = Math.random() * 100;
+          const posY = Math.random() * 100;
+          const delay = Math.random() * 5;
+          const duration = Math.random() * 15 + 10;
+          
+          particle.style.width = `${size}px`;
+          particle.style.height = `${size}px`;
+          particle.style.left = `${posX}%`;
+          particle.style.top = `${posY}%`;
+          particle.style.animation = `float ${duration}s ease-in-out ${delay}s infinite`;
+          
+          document.body.appendChild(particle);
+        }
+      }
+      
+      // Add floating animation
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes float {
+          0% { transform: translateY(0) translateX(0); opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+      
+      createParticles();
+    });
+  </script>
+
+</body>
+</html>
