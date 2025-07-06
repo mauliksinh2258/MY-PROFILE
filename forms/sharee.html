@@ -83,6 +83,65 @@
       margin: 0 auto;
     }
     
+    /* Share Type Selector - Enhanced Visibility */
+    .share-type-selector {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 2rem;
+      gap: 1rem;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 1rem;
+      border-radius: 50px;
+      box-shadow: 0 10px 30px rgba(67, 97, 238, 0.1);
+      border: 1px solid rgba(67, 97, 238, 0.1);
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .share-type-btn {
+      padding: 0.8rem 2rem;
+      border-radius: 50px;
+      background: white;
+      border: none;
+      color: var(--primary-dark);
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(67, 97, 238, 0.1);
+      z-index: 1;
+    }
+    
+    .share-type-btn.active {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      box-shadow: 0 8px 25px rgba(67, 97, 238, 0.3);
+    }
+    
+    .share-type-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, transparent 100%);
+      z-index: -1;
+      opacity: 0;
+      transition: var(--transition);
+    }
+    
+    .share-type-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(67, 97, 238, 0.2);
+    }
+    
+    .share-type-btn:hover::before {
+      opacity: 1;
+    }
+    
     /* Premium Share Card */
     .share-card {
       background: linear-gradient(145deg, rgba(67,97,238,0.95), rgba(57,12,163,0.95));
@@ -185,6 +244,8 @@
     .twitter:hover { background: #000000; }
     .copy-link:hover { background: #6c757d; }
     .email:hover { background: #ea4335; }
+    .sms:hover { background: #20c997; }
+    .pinterest:hover { background: #e60023; }
     
     .whatsapp:hover i { transform: scale(1.2) rotate(-5deg); }
     .instagram:hover i { transform: scale(1.2) rotate(5deg); }
@@ -194,6 +255,8 @@
     .twitter:hover i { transform: scale(1.2) rotate(5deg); }
     .copy-link:hover i { transform: scale(1.2) rotate(-5deg); }
     .email:hover i { transform: scale(1.2) rotate(5deg); }
+    .sms:hover i { transform: scale(1.2) rotate(-5deg); }
+    .pinterest:hover i { transform: scale(1.2) rotate(5deg); }
     
     /* QR Code Section */
     .qr-section {
@@ -221,12 +284,19 @@
       align-items: center;
       justify-content: center;
       border-radius: 12px;
+      overflow: hidden;
     }
     
     .qr-placeholder i {
       font-size: 3rem;
       color: white;
       opacity: 0.7;
+    }
+    
+    .qr-placeholder img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
     }
     
     /* Footer */
@@ -334,7 +404,7 @@
     /* Responsive adjustments */
     @media (max-width: 768px) {
       .share-grid {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, 1fr);
       }
       
       .share-header h1 {
@@ -350,6 +420,24 @@
         font-size: 0.9rem;
         top: 15px;
         left: 15px;
+      }
+    }
+    
+    @media (max-width: 600px) {
+      .share-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      
+      .share-type-selector {
+        flex-direction: column;
+        align-items: center;
+        border-radius: 24px;
+        padding: 0.5rem;
+      }
+      
+      .share-type-btn {
+        width: 100%;
+        text-align: center;
       }
     }
     
@@ -394,6 +482,12 @@
       <p>Spread the inspiration with your network and help others discover this content</p>
     </div>
     
+    <!-- Share Type Selector - Now Visible and Stylish -->
+    <div class="share-type-selector">
+      <button class="share-type-btn active" id="profile-btn">Profile</button>
+      <button class="share-type-btn" id="resume-btn">Resume</button>
+    </div>
+    
     <div class="share-card">
       <div class="share-grid">
         <a href="#" class="share-btn whatsapp" id="whatsapp-share">
@@ -414,6 +508,16 @@
         <a href="#" class="share-btn linkedin" id="linkedin-share">
           <i class="bi bi-linkedin"></i>
           <span>LinkedIn</span>
+        </a>
+        
+        <a href="#" class="share-btn sms" id="sms-share">
+          <i class="bi bi-chat-text"></i>
+          <span>SMS</span>
+        </a>
+        
+        <a href="#" class="share-btn pinterest" id="pinterest-share">
+          <i class="bi bi-pinterest"></i>
+          <span>Pinterest</span>
         </a>
         
         <a href="#" class="share-btn snapchat" id="snapchat-share">
@@ -442,8 +546,6 @@
         <h3>Scan QR Code</h3>
         <div class="qr-placeholder">
           <i class="bi bi-qr-code-scan"></i>
-          <!-- You would replace this with your actual QR code image -->
-          <!-- <img src="your-qr-code.png" alt="QR Code"> -->
         </div>
       </div>
     </div>
@@ -458,33 +560,77 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Get current page URL and title
-      const currentUrl = window.location.href;
-      const pageTitle = document.title;
-      const encodedUrl = encodeURIComponent(currentUrl);
-      const encodedTitle = encodeURIComponent(pageTitle);
-      
-      // Set share URLs
-      const setShareLink = (id, url) => {
-        const el = document.getElementById(id);
-        if (el) {
-          el.href = url;
-          el.target = '_blank';
-          el.rel = 'noopener noreferrer';
+      // Centralized link configuration - change these URLs as needed
+      const shareLinks = {
+        profile: {
+          url: "https://example.com/profile", // Replace with your profile URL
+          title: "Check out my professional profile"
+        },
+        resume: {
+          url: "https://example.com/resume", // Replace with your resume URL
+          title: "Check out my resume"
         }
       };
       
-      setShareLink('whatsapp-share', `https://wa.me/?text=${encodedTitle}%20${encodedUrl}`);
-      setShareLink('instagram-share', `https://www.instagram.com/`);
-      setShareLink('facebook-share', `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`);
-      setShareLink('linkedin-share', `https://www.linkedin.com/shareArticle?url=${encodedUrl}&title=${encodedTitle}`);
-      setShareLink('snapchat-share', `https://www.snapchat.com/`);
-      setShareLink('twitter-share', `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`);
-      setShareLink('email-share', `mailto:?subject=${encodedTitle}&body=Check%20this%20out:%20${encodedUrl}`);
+      let currentShareType = 'profile';
+      
+      // Get DOM elements
+      const profileBtn = document.getElementById('profile-btn');
+      const resumeBtn = document.getElementById('resume-btn');
+      
+      // Set share URLs based on current share type
+      const updateShareLinks = () => {
+        const currentConfig = shareLinks[currentShareType];
+        const encodedUrl = encodeURIComponent(currentConfig.url);
+        const encodedTitle = encodeURIComponent(currentConfig.title);
+        
+        // Set share URLs
+        const setShareLink = (id, url) => {
+          const el = document.getElementById(id);
+          if (el) {
+            el.href = url;
+            el.target = '_blank';
+            el.rel = 'noopener noreferrer';
+          }
+        };
+        
+        setShareLink('whatsapp-share', `https://wa.me/?text=${encodedTitle}%20${encodedUrl}`);
+        setShareLink('instagram-share', `https://www.instagram.com/`);
+        setShareLink('facebook-share', `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`);
+        setShareLink('linkedin-share', `https://www.linkedin.com/shareArticle?url=${encodedUrl}&title=${encodedTitle}`);
+        setShareLink('snapchat-share', `https://www.snapchat.com/`);
+        setShareLink('twitter-share', `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`);
+        setShareLink('email-share', `mailto:?subject=${encodedTitle}&body=Check%20this%20out:%20${encodedUrl}`);
+        setShareLink('sms-share', `sms:?body=${encodedTitle}%20${encodedUrl}`);
+        setShareLink('pinterest-share', `https://pinterest.com/pin/create/button/?url=${encodedUrl}&description=${encodedTitle}`);
+        
+        // Update QR code (placeholder - replace with actual QR generation if needed)
+        const qrPlaceholder = document.querySelector('.qr-placeholder');
+        qrPlaceholder.innerHTML = `<i class="bi bi-qr-code-scan"></i><p style="margin-top:10px;font-size:0.8rem;">${currentShareType}</p>`;
+      };
+      
+      // Initialize share links
+      updateShareLinks();
+      
+      // Profile button click handler
+      profileBtn.addEventListener('click', function() {
+        currentShareType = 'profile';
+        profileBtn.classList.add('active');
+        resumeBtn.classList.remove('active');
+        updateShareLinks();
+      });
+      
+      // Resume button click handler
+      resumeBtn.addEventListener('click', function() {
+        currentShareType = 'resume';
+        resumeBtn.classList.add('active');
+        profileBtn.classList.remove('active');
+        updateShareLinks();
+      });
       
       // Copy Link functionality
       document.getElementById('copy-link').addEventListener('click', function() {
-        navigator.clipboard.writeText(currentUrl).then(() => {
+        navigator.clipboard.writeText(shareLinks[currentShareType].url).then(() => {
           showToast('Link copied to clipboard!');
         }).catch(err => {
           showToast('Failed to copy link');
@@ -494,7 +640,6 @@
       
       // Home button functionality
       document.getElementById('home-btn').addEventListener('click', function() {
-        // Replace with your actual home page URL
         window.location.href = '/';
       });
       
@@ -509,9 +654,9 @@
       }
       
       // Enhanced click animation for all buttons
-      document.querySelectorAll('.share-btn, .home-btn').forEach(btn => {
+      document.querySelectorAll('.share-btn, .home-btn, .share-type-btn').forEach(btn => {
         btn.addEventListener('click', function(e) {
-          if (this.id !== 'copy-link' && this.id !== 'home-btn') {
+          if (this.id !== 'copy-link' && this.id !== 'home-btn' && !this.id.includes('-btn')) {
             e.preventDefault();
           }
           
@@ -540,7 +685,7 @@
           
           setTimeout(() => {
             ripple.remove();
-            if (this.id !== 'copy-link' && this.id !== 'home-btn' && this.href) {
+            if (this.id !== 'copy-link' && this.id !== 'home-btn' && !this.id.includes('-btn') && this.href) {
               window.open(this.href, '_blank');
             }
           }, 700);
