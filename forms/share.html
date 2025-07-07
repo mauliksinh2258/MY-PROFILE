@@ -279,24 +279,24 @@
       width: 150px;
       height: 150px;
       margin: 0 auto;
-      background: rgba(255,255,255,0.2);
+      background: white;
       display: flex;
       align-items: center;
       justify-content: center;
       border-radius: 12px;
       overflow: hidden;
+      padding: 10px;
+    }
+    
+    .qr-placeholder canvas {
+      max-width: 100%;
+      max-height: 100%;
     }
     
     .qr-placeholder i {
       font-size: 3rem;
-      color: white;
+      color: var(--primary-dark);
       opacity: 0.7;
-    }
-    
-    .qr-placeholder img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
     }
     
     /* Footer */
@@ -478,7 +478,8 @@
     </button>
     
     <div class="share-header">
-      <h1>Share - Profile & Resume</h1>
+      <h1>Share This Page</h1>
+      <p>Spread the inspiration with your network and help others discover this content</p>
     </div>
     
     <!-- Share Type Selector - Now Visible and Stylish -->
@@ -550,28 +551,60 @@
     </div>
     
     <div class="share-footer">
-      <p>Thank you for supporting Me!</p>
+      <p>Your share helps us grow. Thank you for supporting our community!</p>
     </div>
   </div>
 
   <!-- Toast Notification -->
   <div class="toast" id="toast">Link copied to clipboard!</div>
 
+  <!-- QR Code Library -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       // Centralized link configuration - change these URLs as needed
       const shareLinks = {
         profile: {
-          url: "https://mauliksinhmakwana.store", // Replace with your profile URL
-          title: "Check out my web profile"
+          url: "https://example.com/profile", // Replace with your profile URL
+          title: "Check out my professional profile"
         },
         resume: {
-          url: "https://drive.google.com/file/d/12_CUrR8WZe8A2o_6wW4uzDHQ7cl1Smjr/view?usp=drive_link", // Replace with your resume URL
+          url: "https://example.com/resume", // Replace with your resume URL
           title: "Check out my resume"
         }
       };
       
       let currentShareType = 'profile';
+      
+      // Function to generate QR code
+      function generateQRCode(url) {
+        const qrPlaceholder = document.querySelector('.qr-placeholder');
+        qrPlaceholder.innerHTML = ''; // Clear existing content
+        
+        // Create canvas for QR code
+        const canvas = document.createElement('canvas');
+        qrPlaceholder.appendChild(canvas);
+        
+        // Generate QR code
+        QRCode.toCanvas(canvas, url, {
+          width: 130,
+          margin: 1,
+          color: {
+            dark: '#3a0ca3', // Dark purple to match your theme
+            light: '#ffffff'
+          }
+        }, function(error) {
+          if (error) {
+            console.error(error);
+            // Fallback if QR generation fails
+            qrPlaceholder.innerHTML = '<i class="bi bi-qr-code-scan"></i>';
+          }
+        });
+      }
+      
+      // Initialize QR code
+      generateQRCode(shareLinks.profile.url);
       
       // Get DOM elements
       const profileBtn = document.getElementById('profile-btn');
@@ -603,9 +636,8 @@
         setShareLink('sms-share', `sms:?body=${encodedTitle}%20${encodedUrl}`);
         setShareLink('pinterest-share', `https://pinterest.com/pin/create/button/?url=${encodedUrl}&description=${encodedTitle}`);
         
-        // Update QR code (placeholder - replace with actual QR generation if needed)
-        const qrPlaceholder = document.querySelector('.qr-placeholder');
-        qrPlaceholder.innerHTML = `<i class="bi bi-qr-code-scan"></i><p style="margin-top:10px;font-size:0.8rem;">${currentShareType}</p>`;
+        // Update QR code
+        generateQRCode(currentConfig.url);
       };
       
       // Initialize share links
